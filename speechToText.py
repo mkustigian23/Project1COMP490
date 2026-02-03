@@ -33,10 +33,14 @@ def transcribe_file(file_path: str, model_path: str) -> str:
     model = Model(model_path)
     wf = wave.open(file_path, "rb")
 
-    if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getframerate() != 16000:
-        raise ValueError("Audio must be mono 16-bit PCM at 16000 Hz")
+    if wf.getnchannels() != 1 or wf.getsampwidth() != 2:
+        raise ValueError("Audio must be mono 16-bit PCM")
 
-    recognizer = KaldiRecognizer(model, wf.getframerate())
+    sample_rate = wf.getframerate()
+    if sample_rate not in [8000, 16000, 32000, 44100, 48000]:
+        raise ValueError(f"Unsupported sample rate: {sample_rate} Hz")
+
+    recognizer = KaldiRecognizer(model, sample_rate)
     recognizer.SetWords(False)
     recognizer.SetMaxAlternatives(0)
 
