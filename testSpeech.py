@@ -5,7 +5,7 @@ from vosk import Model, KaldiRecognizer
 import wave
 
 
-from speechToText import transcribe_file   # ← adjust this line
+from speechToText import listen_and_transcribe  # Fixed now should pass all tests
 
 
 class TestVoskTranscription(unittest.TestCase):
