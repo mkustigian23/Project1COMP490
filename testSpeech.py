@@ -16,9 +16,7 @@ class TestVoskTranscription(unittest.TestCase):
 
 
     def test_transcribe_known_audio(self):
-        # This is a very short public-domain WAV someone uploaded years ago that I found on GitHub
-        # saying roughly: "I am female"
-        audio_file = "test-female.wav"
+        audio_file = "sample_audio.wav"
 
         self.assertTrue(os.path.exists(audio_file), "Test audio file missing in CI")
 
@@ -29,8 +27,8 @@ class TestVoskTranscription(unittest.TestCase):
 
 
         self.assertTrue(
-            any(word in text for word in ["female", "i am female", "i'm female"]),
-            f"Expected 'female' in transcription, got: '{text}'"
+            any(word in text for word in ["hello", "hello this is", "hello this is a short sample audio"]),
+            f"Expected 'hello' in transcription, got: '{text}'"
         )
 
 
