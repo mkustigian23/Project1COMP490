@@ -22,7 +22,7 @@ def listen_and_transcribe(model_path: str, sample_rate: int = 16000):
     """
     Listen to microphone indefinitely, print final recognitions to console,
     and append them to a new timestamped file for this session.
-    Stops gracefully with Ctrl+C.
+    Stops with Ctrl+C.
     """
     recognizer = get_recognizer(model_path, sample_rate)
 
@@ -37,7 +37,7 @@ def listen_and_transcribe(model_path: str, sample_rate: int = 16000):
         frames_per_buffer=8192  # larger buffer → fewer calls, but still low latency
     )
 
-    print("\n🎤 Listening... (speak naturally, pause between sentences if you want)")
+    print("\n🎤 Listening... (Speak into the microphone.)")
     print("Press Ctrl+C to stop and save.\n")
 
     # Unique file per run
@@ -81,7 +81,6 @@ def listen_and_transcribe(model_path: str, sample_rate: int = 16000):
 
 
 if __name__ == "__main__":
-    # Change this path to wherever you unzipped the model
     MODEL_PATH = "vosk-model-small-en-us-0.15"
 
     try:

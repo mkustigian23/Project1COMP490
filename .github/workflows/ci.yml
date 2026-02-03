@@ -42,7 +42,8 @@ jobs:
 
       - name: Download short test audio
         run: |
-          wget https://files.catbox.moe/0v3q8z.wav -O test-female.wav
+          git clone https://github.com/voxserv/audio_quality_testing_samples.git --depth=1
+          cp audio_quality_testing_samples/orig/34210__acclivity__i-am-female.wav test-female.wav
 
       - name: Lint with flake8
         run: |
