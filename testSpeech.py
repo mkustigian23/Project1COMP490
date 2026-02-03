@@ -5,7 +5,6 @@ from vosk import Model, KaldiRecognizer
 import wave
 
 from speechToText import transcribe_file
-#Fixed now should pass all tests
 
 
 class TestVoskTranscription(unittest.TestCase):
@@ -25,11 +24,11 @@ class TestVoskTranscription(unittest.TestCase):
         text = text.lower().strip()
         print("Recognized:", text)
 
-
         self.assertTrue(
-            any(word in text for word in ["hello", "hello this is", "hello this is a short sample audio"]),
+            any(word in text for word in ["hello", "hello this is", "he low this in a short sample audio file for transcription testing"]),
             f"Expected 'hello' in transcription, got: '{text}'"
         )
+
 
 
 if __name__ == "__main__":

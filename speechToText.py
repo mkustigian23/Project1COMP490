@@ -37,7 +37,7 @@ def transcribe_file(file_path: str, model_path: str) -> str:
         raise ValueError("Audio must be mono 16-bit PCM")
 
     sample_rate = wf.getframerate()
-    if sample_rate not in [8000, 16000, 32000, 44100, 48000]:
+    if sample_rate not in [8000, 16000,22050, 32000, 44100, 48000]:
         raise ValueError(f"Unsupported sample rate: {sample_rate} Hz")
 
     recognizer = KaldiRecognizer(model, sample_rate)
