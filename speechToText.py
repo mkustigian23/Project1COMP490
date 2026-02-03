@@ -18,6 +18,43 @@ def get_recognizer(model_path: str, sample_rate: int = 16000) -> KaldiRecognizer
     return recognizer
 
 
+def transcribe_file(file_path: str, model_path: str) -> str:
+    """
+    Transcribes a pre-recorded WAV file using Vosk.
+    Used for unit tests and batch processing.
+    """
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model not found: {model_path}")
+
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Audio file not found: {file_path}")
+
+    model = Model(model_path)
+    wf = wave.open(file_path, "rb")
+
+    if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getframerate() != 16000:
+        raise ValueError("Audio must be mono 16-bit PCM at 16000 Hz")
+
+    recognizer = KaldiRecognizer(model, wf.getframerate())
+    recognizer.SetWords(False)
+    recognizer.SetMaxAlternatives(0)
+
+    result_text = ""
+    while True:
+        data = wf.readframes(4000)
+        if len(data) == 0:
+            break
+        if recognizer.AcceptWaveform(data):
+            result = json.loads(recognizer.Result())
+            result_text += result.get("text", "") + " "
+
+    final = json.loads(recognizer.FinalResult())
+    result_text += final.get("text", "")
+
+    wf.close()
+    return result_text.strip()
+
+
 def listen_and_transcribe(model_path: str, sample_rate: int = 16000):
     """
     Listen to microphone indefinitely, print final recognitions to console,

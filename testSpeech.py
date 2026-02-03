@@ -4,7 +4,7 @@ import json
 from vosk import Model, KaldiRecognizer
 import wave
 
-from speechToText import listen_and_transcribe
+from speechToText import transcribe_file
 #Fixed now should pass all tests
 
 
@@ -22,7 +22,7 @@ class TestVoskTranscription(unittest.TestCase):
 
         self.assertTrue(os.path.exists(audio_file), "Test audio file missing in CI")
 
-        text = listen_and_transcribe(audio_file, self.model_path)
+        text = transcribe_file(audio_file, self.model_path)
 
         text = text.lower().strip()
         print("Recognized:", text)
