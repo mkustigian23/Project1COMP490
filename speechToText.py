@@ -70,7 +70,6 @@ def listen_and_transcribe(model_path: str, sample_rate: int = 16000):
 
     p = pyaudio.PyAudio()
 
-    # Most machines work well with 16000 Hz, mono, 16-bit → matches Vosk best
     stream = p.open(
         format=pyaudio.paInt16,
         channels=1,
