@@ -14,8 +14,8 @@ def get_recognizer(model_path: str, sample_rate: int = 16000) -> KaldiRecognizer
 
     model = Model(model_path)
     recognizer = KaldiRecognizer(model, sample_rate)
-    recognizer.SetWords(False)       # faster if you don't need word-level timing
-    recognizer.SetMaxAlternatives(0) # just get the best result
+    recognizer.SetWords(False)
+    recognizer.SetMaxAlternatives(0)
     return recognizer
 
 
