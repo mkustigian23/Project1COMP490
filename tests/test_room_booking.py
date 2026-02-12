@@ -38,29 +38,30 @@ def test_get_available_rooms(setup):
 def test_book_and_conflict(setup):
     server_url, token = setup
 
-    # Get available rooms
     rooms = get_available_rooms(server_url, token)
     assert len(rooms) > 0, "No available rooms found"
     room_id = rooms[0]["id"]
 
-    # Use a clearly future time
-    now = datetime.now()
-    start_time = (now + timedelta(minutes=30)).strftime("%Y-%m-%d %I:%M %p")
-    end_time = (now + timedelta(minutes=45)).strftime("%Y-%m-%d %I:%M %p")
+    # Use a much safer future window
+    now = datetime.utcnow()  # or datetime.now() — UTC often helps with server timezone
+    start_time = (now + timedelta(minutes=60)).strftime("%Y-%m-%d %I:%M %p")  # 1 hour ahead
+    end_time = (now + timedelta(minutes=75)).strftime("%Y-%m-%d %I:%M %p")
 
-    # First booking should succeed
+    # Optional: print for debugging in CI
+    print(f"Booking room {room_id} from {start_time} to {end_time}")
+
+    # First booking
     booking = book_room(server_url, token, room_id, start_time, end_time)
 
+    # Check success message (this matches your server's actual response)
+    assert isinstance(booking, dict)
+    assert "message" in booking
+    assert "successfully" in booking["message"].lower()
 
-    assert isinstance(booking, dict), "Booking response should be a dict"
-    assert "message" in booking, "Booking should return a message"
-    assert "successfully" in booking["message"].lower(), "Booking message should indicate success"
-
-    # Second booking for SAME time + room should fail (conflict)
-    with pytest.raises(Exception) as exc_info:
+    # Second booking → must fail
+    with pytest.raises(Exception) as exc:
         book_room(server_url, token, room_id, start_time, end_time)
 
-    #Check that the exception is a 400 or conflict-related
-    assert "400" in str(exc_info.value) or "conflict" in str(exc_info.value).lower() or "already" in str(
-        exc_info.value).lower(), \
-        f"Expected conflict error, got: {exc_info.value}"
+    # Optional: make the assertion more specific
+    error_text = str(exc.value)
+    assert "400" in error_text, f"Expected 400 conflict error, got: {error_text}"
