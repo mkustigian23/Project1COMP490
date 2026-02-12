@@ -3,16 +3,27 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
+
 def login(server_url, email, password):
     """
     Logs in and returns the access token.
     """
     endpoint = "/api/v1/member/login/"
     data = {"email": email, "password": password}
-    response = requests.post(server_url + endpoint, json=data)
-    response.raise_for_status()
-    return response.json()["access"]
 
+    response = requests.post(server_url + endpoint, json=data)
+
+    print("Status code:", response.status_code)
+    print("Raw response text:", response.text)  # keep for now
+    response.raise_for_status()
+
+    json_data = response.json()
+    print("Parsed JSON:", json_data)  # keep for now
+
+    # FIXED: access the nested "token" → "access"
+    access_token = json_data["token"]["access"]
+
+    return access_token
 def get_available_rooms(server_url, token, start_time=None, end_time=None):
     """
     Retrieves available rooms, optionally for a time range.
@@ -35,6 +46,7 @@ def book_room(server_url, token, room_id, start_time, end_time, no_of_persons=1)
     endpoint = f"/api/v1/meeting-rooms/{room_id}/book/"
     headers = {"Authorization": f"Bearer {token}"}
     data = {"start_time": start_time, "end_time": end_time, "no_of_persons": no_of_persons}
+
     response = requests.post(server_url + endpoint, headers=headers, json=data)
     response.raise_for_status()
     return response.json()
@@ -75,19 +87,19 @@ def main():
 
     # Pick first available room ID (assume at least one exists)
     if available_rooms:
-        room_id = available_rooms[0]["id"]  # Adjust based on actual response structure
+        room_id = available_rooms[0]["id"]
     else:
         raise ValueError("No available rooms")
 
     # Prepare 15-minute reservation times (future time)
     now = datetime.now()
-    start_time = (now + timedelta(minutes=5)).strftime("%Y-%m-%d %I:%M %p")  # 5 min from now
-    end_time = (now + timedelta(minutes=20)).strftime("%Y-%m-%d %I:%M %p")   # 15 min duration
+    start_time = (now + timedelta(minutes=85)).strftime("%Y-%m-%d %I:%M %p")  # 85 min from now
+    end_time = (now + timedelta(minutes=100)).strftime("%Y-%m-%d %I:%M %p")   # 15 min duration
 
     # Book room
     booking = book_room(server_url, token, room_id, start_time, end_time)
     print("Booking:", booking)
-    booking_id = booking["id"]  # Assume response has 'id'
+    booking_id = booking['id']  # Assume response has 'id'
 
     # Get my bookings
     my_bookings = get_my_bookings(server_url, token)
