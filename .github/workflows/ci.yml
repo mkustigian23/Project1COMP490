@@ -47,7 +47,7 @@ jobs:
             --statistics \
             --max-complexity=12 \
             --max-line-length=127 \
-            --exit-zero
+
       - name: Run unit tests
         run: |
           export PYTHONPATH=$PWD:$PYTHONPATH
