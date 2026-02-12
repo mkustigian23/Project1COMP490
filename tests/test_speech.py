@@ -1,6 +1,6 @@
 import pytest
 import os
-from speechToText import transcribe_file
+from speech_to_text import transcribe_file
 
 
 @pytest.fixture(scope="session")
