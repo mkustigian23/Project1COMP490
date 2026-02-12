@@ -1,4 +1,4 @@
-vosk>=0.15
+vosk
 pyaudio>=0.2.11
 requests
 python-dotenv
